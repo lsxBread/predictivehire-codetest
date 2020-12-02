@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  user-service:
+    container_name: ms-user
+    build:
+      context: ./microservices/user-service-8001
+      args:
+        - PORT=${USER_SERVICE_PORT}
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    environment:
+      - PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
+
+  api-gateway:
+    container_name: api-gateway-3000
+    build:
+      context: ./api-gateway-3000
+      args:
+        - PORT=${API_GATEWAY_PORT}
+    ports:
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    environment:
+      - PORT=${API_GATEWAY_PORT}
+      - USER_SERVICE_HOST=${USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
+    depends_on:
+      - user-service
+
+networks:
+  predictivehire:
