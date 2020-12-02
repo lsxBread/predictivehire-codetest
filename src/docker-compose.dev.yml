@@ -1,22 +1,6 @@
 version: '2'
 
 services:
-  user-service:
-    container_name: dev-user-service
-    build:
-      context: ./microservices/user-service-8001
-      dockerfile: Dockerfile.dev
-      args:
-        - PORT=${USER_SERVICE_PORT}
-    ports:
-      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
-    volumes:
-      - ./microservices/user-service-8001:/usr/src/app
-    environment:
-      - PORT=${USER_SERVICE_PORT}
-    networks:
-      - predictivehire
-
   api-gateway:
     container_name: dev-api-gateway
     build:
@@ -36,6 +20,38 @@ services:
       - predictivehire
     depends_on:
       - user-service
+
+  user-service:
+    container_name: dev-user-service
+    build:
+      context: ./microservices/user-service-8001
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${USER_SERVICE_PORT}
+    ports:
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+    volumes:
+      - ./microservices/user-service-8001:/usr/src/app
+    environment:
+      - PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
+
+  auth-service:
+    container_name: dev-auth-service
+    build:
+      context: ./microservices/auth-service-8080
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${AUTH_SERVICE_PORT}
+    ports:
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+    volumes:
+      - ./microservices/auth-service-8080:/usr/src/app
+    environment:
+      - PORT=${AUTH_SERVICE_PORT}
+    networks:
+      - predictivehire
 
 networks:
   predictivehire:
