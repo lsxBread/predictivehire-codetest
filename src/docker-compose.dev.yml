@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  user-service:
+    container_name: dev-user-service
+    build:
+      context: ./microservices/user-service-8001
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${USER_SERVICE_PORT}
+    ports:
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+    volumes:
+      - ./microservices/user-service-8001:/usr/src/app
+    environment:
+      - PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
+
+  api-gateway:
+    container_name: dev-api-gateway
+    build:
+      context: ./api-gateway-3000
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${API_GATEWAY_PORT}
+    ports:
+      - '${API_GATEWAY_PORT}:${API_GATEWAY_PORT}'
+    volumes:
+      - ./api-gateway-3000:/usr/src/app
+    environment:
+      - PORT=${API_GATEWAY_PORT}
+      - USER_SERVICE_HOST=${USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
+    depends_on:
+      - user-service
+
+networks:
+  predictivehire:
