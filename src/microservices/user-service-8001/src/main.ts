@@ -6,7 +6,7 @@ import { Logger } from '@nestjs/common';
 const logger = new Logger('User Service');
 
 async function bootstrap() {
-  const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+  const port = process.env.PORT ? Number(process.env.PORT) : 8001;
 
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
