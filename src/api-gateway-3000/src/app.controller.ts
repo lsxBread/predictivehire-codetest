@@ -6,8 +6,10 @@ import {
   Logger,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { AuthGuard } from './guards/auth.guard';
 import { UserLoginDto } from './dtos/UserLoginDto';
 
 @Controller()
@@ -18,15 +20,9 @@ export class AppController {
     private readonly logger: Logger,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get('/user/:name')
   getUserByName(@Param('name') name: string) {
     return this.userService.send({ cmd: 'hello' }, name);
-  }
-
-  @Post('login')
-  login(@Body() userLoginDto: UserLoginDto) {
-    this.logger.log(`login: ${JSON.stringify(userLoginDto)}`);
-
-    return this.authService.send({ cmd: 'auth' }, userLoginDto);
   }
 }

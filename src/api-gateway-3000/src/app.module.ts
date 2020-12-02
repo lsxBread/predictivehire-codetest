@@ -33,7 +33,7 @@ import { AppController } from './app.controller';
           transport: Transport.TCP,
           options: {
             host: configService.get('AUTH_SERVICE_HOST'),
-            port: configService.get('AUTH_SERVICE_PORT'),
+            port: configService.get('AUTH_SERVICE_TCP_PORT'),
           },
         });
       },

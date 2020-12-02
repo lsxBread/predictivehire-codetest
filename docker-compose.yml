@@ -4,7 +4,7 @@ services:
   api-gateway:
     container_name: api-gateway
     build:
-      context: ./api-gateway-3000
+      context: ./src/api-gateway-3000
       args:
         - PORT=${API_GATEWAY_PORT}
     ports:
@@ -21,7 +21,7 @@ services:
   user-service:
     container_name: user-service
     build:
-      context: ./microservices/user-service-8001
+      context: ./src/microservices/user-service-8001
       args:
         - PORT=${USER_SERVICE_PORT}
     ports:
@@ -34,13 +34,16 @@ services:
   auth-service:
     container_name: auth-service
     build:
-      context: ./microservices/auth-service-8080
+      context: ./src/microservices/auth-service-8080
       args:
-        - PORT=${AUTH_SERVICE_PORT}
+        - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
+        - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
     ports:
-      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+      - '${AUTH_SERVICE_HTTP_PORT}:${AUTH_SERVICE_HTTP_PORT}'
+      - '${AUTH_SERVICE_TCP_PORT}:${AUTH_SERVICE_TCP_PORT}'
     environment:
-      - PORT=${AUTH_SERVICE_PORT}
+      - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
+      - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
     networks:
       - predictivehire
 

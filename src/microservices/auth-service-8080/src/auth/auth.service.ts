@@ -1,7 +1,8 @@
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 
+@Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
@@ -13,6 +14,7 @@ export class AuthService {
       const user = {
         id: 1,
         username: 'Leo',
+        role: 'admin',
         password: '123123',
       };
 
@@ -24,16 +26,19 @@ export class AuthService {
       return null;
     } catch (error) {
       this.logger.error(error);
-      // throw error;
+      throw error;
     }
   }
 
-  async login(user) {
-    const payload = { user, sub: user.id };
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.id, role: user.role };
 
     return {
-      userId: user.id,
       accessToken: this.jwtService.sign(payload),
     };
+  }
+
+  validateToken(jwt: string) {
+    return this.jwtService.verify(jwt);
   }
 }
