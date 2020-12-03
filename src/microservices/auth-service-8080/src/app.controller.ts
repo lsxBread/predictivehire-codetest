@@ -26,9 +26,7 @@ export class AppController {
   @MessagePattern({ role: 'auth', cmd: 'check' })
   async loggedIn(data) {
     try {
-      const res = this.authService.validateToken(data.jwt);
-
-      return res;
+      return this.authService.validateToken(data.jwt);
     } catch (e) {
       this.logger.log(e);
       return false;

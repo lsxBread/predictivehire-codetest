@@ -18,31 +18,13 @@ services:
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
       - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
       - AUTH_SERVICE_TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+      - VACANCY_SERVICE_PORT=${VACANCY_SERVICE_PORT}
+      - VACANCY_SERVICE_HOST=${VACANCY_SERVICE_HOST}
     networks:
       - predictivehire
     depends_on:
       - user-service
       - auth-service
-
-  user-service:
-    container_name: dev-user-service
-    build:
-      context: ./src/microservices/user-service-8001
-      dockerfile: Dockerfile.dev
-      args:
-        - PORT=${USER_SERVICE_PORT}
-    ports:
-      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
-    volumes:
-      - ./src/microservices/user-service-8001:/usr/src/app
-    environment:
-      - PORT=${USER_SERVICE_PORT}
-      - DB_URL=mongodb://dev-user-service-mongo-db/users
-    networks:
-      - predictivehire
-      - user-service-private-network
-    depends_on:
-      - user-service-mongo-db
 
   auth-service:
     container_name: dev-auth-service
@@ -65,6 +47,46 @@ services:
     networks:
       - predictivehire
 
+  user-service:
+    container_name: dev-user-service
+    build:
+      context: ./src/microservices/user-service-8001
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${USER_SERVICE_PORT}
+    ports:
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+    volumes:
+      - ./src/microservices/user-service-8001:/usr/src/app
+    environment:
+      - PORT=${USER_SERVICE_PORT}
+      - DB_URL=mongodb://dev-user-service-mongo-db/users
+    networks:
+      - predictivehire
+      - user-service-private-network
+    depends_on:
+      - user-service-mongo-db
+
+  vacancy-service:
+    container_name: dev-vacancy-service
+    build:
+      context: ./src/microservices/vacancy-service-8002
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${VACANCY_SERVICE_PORT}
+    ports:
+      - '${VACANCY_SERVICE_PORT}:${VACANCY_SERVICE_PORT}'
+    volumes:
+      - ./src/microservices/vacancy-service-8002:/usr/src/app
+    environment:
+      - PORT=${VACANCY_SERVICE_PORT}
+      - DB_URL=mongodb://dev-vacancy-service-mongo-db/vacancy
+    networks:
+      - predictivehire
+      - vacancy-service-private-network
+    depends_on:
+      - vacancy-service-mongo-db
+
   user-service-mongo-db:
     image: mongo
     container_name: dev-user-service-mongo-db
@@ -76,9 +98,22 @@ services:
     networks:
       - user-service-private-network
 
+  vacancy-service-mongo-db:
+    image: mongo
+    container_name: dev-vacancy-service-mongo-db
+    volumes:
+      - vacancies_data:/data/configdb
+      - vacancies_data:/data/db
+    ports:
+      - 27018:27017
+    networks:
+      - vacancy-service-private-network
+
 networks:
   predictivehire:
   user-service-private-network:
+  vacancy-service-private-network:
 
 volumes:
   users_data:
+  vacancies_data:

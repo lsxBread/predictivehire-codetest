@@ -39,6 +39,19 @@ import { AppController } from './app.controller';
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'VACANCY_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('VACANCY_SERVICE_HOST'),
+            port: configService.get('VACANCY_SERVICE_PORT'),
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
   ],
 })
 export class AppModule {}
