@@ -11,22 +11,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from './enum/role.enum';
 import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 
 @Controller()
 export class AppController {
   constructor(
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
-    @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
     @Inject('VACANCY_SERVICE') private readonly vacancyService: ClientProxy,
     private readonly logger: Logger,
   ) {}
-
-  @UseGuards(AuthGuard)
-  @Get('/user/:name')
-  getUserByName(@Param('name') name: string) {
-    return this.userService.send({ cmd: 'hello' }, name);
-  }
 
   @Post('/user')
   registerUser(@Body() createUserDto: any) {
@@ -36,6 +32,7 @@ export class AppController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @Post('/vacancy')
   createVacancy(@Body() createVacancyDto: any) {
     return this.vacancyService.send(
@@ -44,6 +41,9 @@ export class AppController {
     );
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(RoleGuard)
+  @UseGuards(AuthGuard)
   @Put('/vacancy/:id')
   updateVacancy(@Param('id') id: string, @Body() updateVacancyDto: any) {
     return this.vacancyService.send(
@@ -55,6 +55,7 @@ export class AppController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @Get('/vacancy/:id')
   getVacancy(@Param('id') vacandyId: string) {
     return this.vacancyService.send(
@@ -63,6 +64,7 @@ export class AppController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @Get('/vacancy')
   getVacancies() {
     return this.vacancyService.send(
@@ -74,6 +76,9 @@ export class AppController {
     );
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(RoleGuard)
+  @UseGuards(AuthGuard)
   @Delete('/vacancy/:id')
   deleteVacancy(@Param('id') vacandyId: string) {
     return this.vacancyService.send(

@@ -13,7 +13,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     ConfigModule.forRoot(),
     JwtModule.register({
       secret: 'yoursecret',
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '100s' },
     }),
   ],
   providers: [
