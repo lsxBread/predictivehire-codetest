@@ -1,5 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -8,6 +10,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 @Module({
   imports: [
     PassportModule,
+    ConfigModule.forRoot(),
     JwtModule.register({
       secret: 'yoursecret',
       signOptions: { expiresIn: '60s' },
@@ -17,6 +20,19 @@ import { LocalStrategy } from './strategies/local.strategy';
     AuthService,
     LocalStrategy,
     JwtStrategy,
+    {
+      provide: 'USER_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('USER_SERVICE_HOST'),
+            port: configService.get('USER_SERVICE_PORT'),
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
     {
       provide: 'Logger',
       useFactory: () => {

@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AuthGuard } from './guards/auth.guard';
-import { UserLoginDto } from './dtos/UserLoginDto';
 
 @Controller()
 export class AppController {
@@ -24,5 +23,13 @@ export class AppController {
   @Get('/user/:name')
   getUserByName(@Param('name') name: string) {
     return this.userService.send({ cmd: 'hello' }, name);
+  }
+
+  @Post('/user')
+  registerUser(@Body() createUserDto: any) {
+    return this.userService.send(
+      { role: 'user', cmd: 'create' },
+      createUserDto,
+    );
   }
 }

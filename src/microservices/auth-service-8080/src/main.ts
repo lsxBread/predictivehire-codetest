@@ -6,8 +6,8 @@ import { Logger } from '@nestjs/common';
 const logger = new Logger('Auth Service');
 
 async function bootstrap() {
-  const http_port = process.env.PORT ? Number(process.env.HTTP_PORT) : 3001;
-  const tcp_port = process.env.PORT ? Number(process.env.TCP_PORT) : 8080;
+  const HTTP_PORT = process.env.PORT ? Number(process.env.HTTP_PORT) : 3001;
+  const TCP_PORT = process.env.PORT ? Number(process.env.TCP_PORT) : 8080;
 
   const app = await NestFactory.create(AppModule);
 
@@ -15,13 +15,13 @@ async function bootstrap() {
     transport: Transport.TCP,
     options: {
       host: '0.0.0.0',
-      port: tcp_port,
+      port: TCP_PORT,
     },
   });
 
   await app.startAllMicroservicesAsync();
-  await app.listen(http_port, () => {
-    logger.log(`Auth service is listening on port: ${http_port}`);
+  await app.listen(HTTP_PORT, () => {
+    logger.log(`Auth service is listening on port: ${HTTP_PORT}`);
   });
 }
 bootstrap();

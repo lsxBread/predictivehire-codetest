@@ -22,6 +22,7 @@ services:
       - predictivehire
     depends_on:
       - user-service
+      - auth-service
 
   user-service:
     container_name: dev-user-service
@@ -36,8 +37,12 @@ services:
       - ./src/microservices/user-service-8001:/usr/src/app
     environment:
       - PORT=${USER_SERVICE_PORT}
+      - DB_URL=mongodb://dev-user-service-mongo-db/users
     networks:
       - predictivehire
+      - user-service-private-network
+    depends_on:
+      - user-service-mongo-db
 
   auth-service:
     container_name: dev-auth-service
@@ -55,8 +60,25 @@ services:
     environment:
       - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
       - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+      - USER_SERVICE_HOST=${USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
     networks:
       - predictivehire
 
+  user-service-mongo-db:
+    image: mongo
+    container_name: dev-user-service-mongo-db
+    volumes:
+      - users_data:/data/configdb
+      - users_data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - user-service-private-network
+
 networks:
   predictivehire:
+  user-service-private-network:
+
+volumes:
+  users_data:
