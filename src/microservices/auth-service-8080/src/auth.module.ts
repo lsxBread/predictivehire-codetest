@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-
 @Module({
   imports: [
     PassportModule,
@@ -14,6 +14,7 @@ import { AuthService } from './auth.service';
       signOptions: { expiresIn: '600s' },
     }),
   ],
+  controllers: [AuthController],
   providers: [
     AuthService,
     {

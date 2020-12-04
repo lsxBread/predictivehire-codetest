@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
-import { AppModule } from './app.module';
+import { AuthModule } from './auth.module';
 import { Logger } from '@nestjs/common';
 
 const logger = new Logger('Auth Service');
@@ -9,7 +9,7 @@ async function bootstrap() {
   const HTTP_PORT = process.env.PORT ? Number(process.env.HTTP_PORT) : 3001;
   const TCP_PORT = process.env.PORT ? Number(process.env.TCP_PORT) : 8080;
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AuthModule);
 
   app.connectMicroservice({
     transport: Transport.TCP,
