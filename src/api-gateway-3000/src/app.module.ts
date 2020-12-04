@@ -1,16 +1,16 @@
 import { Module, Logger } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { AppController } from './app.controller';
+import controllers from './controllers';
 
 @Module({
   imports: [ConfigModule.forRoot()],
-  controllers: [AppController],
+  controllers: [...controllers],
   providers: [
     {
       provide: 'Logger',
       useFactory: () => {
-        return new Logger('Api-Gateway');
+        return new Logger('API_GATEWAY');
       },
     },
     {

@@ -1,14 +1,7 @@
-import {
-  Controller,
-  Get,
-  Logger,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Logger, UseGuards } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AuthService } from './auth/auth.service';
-import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { LocalAuthGuard } from './auth/guards/localAuth.guard';
 
 @Controller()
 export class AppController {
@@ -17,10 +10,10 @@ export class AppController {
     private readonly logger: Logger,
   ) {}
 
+  @MessagePattern({ role: 'auth', cmd: 'login' })
   @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(req) {
+    return this.authService.login(req.loggedUser);
   }
 
   @MessagePattern({ role: 'auth', cmd: 'check' })

@@ -4,31 +4,41 @@ import {
   Delete,
   Get,
   Inject,
-  Logger,
   Param,
   Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Roles } from './decorators/roles.decorator';
-import { Role } from './enum/role.enum';
-import { AuthGuard } from './guards/auth.guard';
-import { RoleGuard } from './guards/role.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../enum/role.enum';
+import { AuthGuard } from '../guards/auth.guard';
+import { RoleGuard } from '../guards/role.guard';
 
 @Controller()
-export class AppController {
+export class VacancyController {
   constructor(
-    @Inject('USER_SERVICE') private readonly userService: ClientProxy,
     @Inject('VACANCY_SERVICE') private readonly vacancyService: ClientProxy,
-    private readonly logger: Logger,
   ) {}
 
-  @Post('/user')
-  registerUser(@Body() createUserDto: any) {
-    return this.userService.send(
-      { role: 'user', cmd: 'create' },
-      createUserDto,
+  @UseGuards(AuthGuard)
+  @Get('/vacancy/:id')
+  getVacancy(@Param('id') vacandyId: string) {
+    return this.vacancyService.send(
+      { role: 'vacancy', cmd: 'findVacancyById' },
+      vacandyId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/vacancy')
+  getVacancies() {
+    return this.vacancyService.send(
+      {
+        role: 'vacancy',
+        cmd: 'findAllVacancies',
+      },
+      {},
     );
   }
 
@@ -52,27 +62,6 @@ export class AppController {
         id,
         updateVacancyDto,
       },
-    );
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('/vacancy/:id')
-  getVacancy(@Param('id') vacandyId: string) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'findVacancyById' },
-      vacandyId,
-    );
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('/vacancy')
-  getVacancies() {
-    return this.vacancyService.send(
-      {
-        role: 'vacancy',
-        cmd: 'findAllVacancies',
-      },
-      {},
     );
   }
 
