@@ -30,6 +30,10 @@ export class VacanciesService {
     }
   }
 
+  async findVacancyByCompanyId(id: string): Promise<Vacancy[]> {
+    return this.vacancyModel.find({ companyId: id }).exec();
+  }
+
   async deleteVacancyId(id: string): Promise<Vacancy> {
     return this.vacancyModel.findByIdAndDelete(id).exec();
   }

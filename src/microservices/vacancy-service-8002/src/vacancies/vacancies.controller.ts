@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CreateVacancyDto } from './dtos/create-vacancy.dto';
 import { VacanciesService } from './vacancies.service';
@@ -26,6 +20,11 @@ export class VacanciesController {
   @MessagePattern({ role: 'vacancy', cmd: 'findVacancyById' })
   async findVacancyById(id: string) {
     return this.vacanciesService.findVacancyById(id);
+  }
+
+  @MessagePattern({ role: 'vacancy', cmd: 'findVacancyByCompanyId' })
+  async findVacancyByCompanyId(id: string) {
+    return this.vacanciesService.findVacancyByCompanyId(id);
   }
 
   @MessagePattern({ role: 'vacancy', cmd: 'udpateVacancyById' })

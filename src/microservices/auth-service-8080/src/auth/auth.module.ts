@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
     ConfigModule.forRoot(),
     JwtModule.register({
       secret: 'yoursecret',
-      signOptions: { expiresIn: '100s' },
+      signOptions: { expiresIn: '600s' },
     }),
   ],
   providers: [

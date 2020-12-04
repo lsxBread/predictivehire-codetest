@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -27,6 +28,15 @@ export class VacancyController {
     return this.vacancyService.send(
       { role: 'vacancy', cmd: 'findVacancyById' },
       vacandyId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/vacancy')
+  getVacancisOfCompany(@Query('company_id') companyId: string) {
+    return this.vacancyService.send(
+      { role: 'vacancy', cmd: 'findVacancyByCompanyId' },
+      companyId,
     );
   }
 
