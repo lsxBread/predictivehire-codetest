@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Inject,
+  Logger,
   Param,
   Post,
   Put,
@@ -11,6 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { combineAll } from 'rxjs/operators';
+import { CompanyIdPipe } from 'src/pipes/companyId.pipe';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enum/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
@@ -20,6 +24,7 @@ import { RoleGuard } from '../guards/role.guard';
 export class VacancyController {
   constructor(
     @Inject('VACANCY_SERVICE') private readonly vacancyService: ClientProxy,
+    private readonly logger: Logger,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -31,24 +36,25 @@ export class VacancyController {
     );
   }
 
-  @UseGuards(AuthGuard)
-  @Get('/vacancy')
-  getVacancisOfCompany(@Query('company_id') companyId: string) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'findVacancyByCompanyId' },
-      companyId,
-    );
-  }
+  // @UseGuards(AuthGuard)
+  // @Get('/vacancy')
+  // getVacancies() {
+  //   return this.vacancyService.send(
+  //     {
+  //       role: 'vacancy',
+  //       cmd: 'findAllVacancies',
+  //     },
+  //     {},
+  //   );
+  // }
 
   @UseGuards(AuthGuard)
   @Get('/vacancy')
-  getVacancies() {
+  getVacancisOfCompany(@Query('company_id', CompanyIdPipe) companyId: string) {
+    console.log(companyId);
     return this.vacancyService.send(
-      {
-        role: 'vacancy',
-        cmd: 'findAllVacancies',
-      },
-      {},
+      { role: 'vacancy', cmd: 'findVacancyByCompanyId' },
+      companyId,
     );
   }
 

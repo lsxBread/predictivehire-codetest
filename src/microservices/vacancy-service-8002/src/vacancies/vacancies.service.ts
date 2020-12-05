@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Vacancy, VacancyDocument } from './schemas/vacancy.schema';
 import { CreateVacancyDto } from './dtos/create-vacancy.dto';
@@ -39,6 +39,7 @@ export class VacanciesService {
   }
 
   async findAllVacancies(): Promise<Vacancy[]> {
+    Logger.log('==========');
     return this.vacancyModel.find().exec();
   }
 
