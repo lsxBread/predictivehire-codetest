@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   Injectable,
   Logger,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
@@ -19,10 +18,6 @@ export class LocalAuthGuard implements CanActivate {
     const { username, password } = req;
 
     const user = await this.authService.validateUser(username, password);
-
-    if (!user) {
-      throw new UnauthorizedException();
-    }
 
     req.loggedUser = user;
 

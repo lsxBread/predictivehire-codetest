@@ -20,34 +20,25 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    try {
-      const user = await this.userService
-        .send({ role: 'user', cmd: 'findByName' }, username)
-        .pipe(
-          timeout(5000),
-          catchError(err => {
-            if (err instanceof TimeoutError) {
-              return throwError(new RequestTimeoutException());
-            }
-            return throwError(err);
-          }),
-        )
-        .toPromise();
+    const user = await this.userService
+      .send({ role: 'user', cmd: 'findByName' }, username)
+      .pipe(
+        timeout(5000),
+        catchError(err => {
+          if (err instanceof TimeoutError) {
+            return throwError(new RequestTimeoutException());
+          }
+          return throwError(err);
+        }),
+      )
+      .toPromise();
 
-      if (!user) {
-        throw new UnauthorizedException();
-      }
-
-      if (password === user.password) {
-        const { password, ...rest } = user;
-        return rest;
-      }
-
+    if (!user || (user && user.password !== password)) {
       return null;
-    } catch (error) {
-      this.logger.error(error);
-      throw error;
     }
+
+    const { password: userPassword, ...rest } = user;
+    return rest;
   }
 
   async login(user: any) {

@@ -1,6 +1,14 @@
-import { Body, Controller, Inject, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { UserLoginDto } from 'src/dtos/UserLoginDto';
+import { LoginDto } from 'src/dtos/auth/login.dto';
+import { NotFoundInterceptor } from 'src/interceptors/NotFoundInterceptor';
+import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 
 @Controller()
 export class AuthController {
@@ -9,7 +17,10 @@ export class AuthController {
   ) {}
 
   @Post('/login')
-  registerUser(@Body() userLoginDto: UserLoginDto) {
-    return this.authService.send({ role: 'auth', cmd: 'login' }, userLoginDto);
+  @UseInterceptors(
+    new NotFoundInterceptor('Correct username and password not found'),
+  )
+  registerUser(@Body(new DtoValidationPipe()) loginDto: LoginDto) {
+    return this.authService.send({ role: 'auth', cmd: 'login' }, loginDto);
   }
 }

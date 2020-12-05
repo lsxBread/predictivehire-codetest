@@ -13,7 +13,10 @@ export class AuthController {
   @MessagePattern({ role: 'auth', cmd: 'login' })
   @UseGuards(LocalAuthGuard)
   async login(req) {
-    return this.authService.login(req.loggedUser);
+    if (req.loggedUser) {
+      return this.authService.login(req.loggedUser);
+    }
+    return null;
   }
 
   @MessagePattern({ role: 'auth', cmd: 'check' })

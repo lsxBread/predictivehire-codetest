@@ -15,7 +15,6 @@ export class NotFoundInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       tap(data => {
-        console.log(data);
         if (!data || (Array.isArray(data) && data.length === 0)) {
           throw new NotFoundException(this.message);
         }
