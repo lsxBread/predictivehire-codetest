@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,14 +10,20 @@ import {
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { combineAll } from 'rxjs/operators';
-import { CompanyIdPipe } from 'src/pipes/companyId.pipe';
+import { CompanyIdGuard } from 'src/guards/companyIdGuard';
+import { VacancyIdFormatGuard } from '../guards/vancanIdFormatGuard';
+import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
+import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enum/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
 import { RoleGuard } from '../guards/role.guard';
+import { VacancyReponseDto } from '../dtos/vacancy/vacancyResponse.dto';
+import { CreateVacancyDto } from '../dtos/vacancy/createVacancy.dto';
+import { UpdateVacancyDto } from '../dtos/vacancy/updateVacancy.dto';
 
 @Controller()
 export class VacancyController {
@@ -27,68 +32,101 @@ export class VacancyController {
     private readonly logger: Logger,
   ) {}
 
-  @UseGuards(AuthGuard)
   @Get('/vacancy/:id')
-  getVacancy(@Param('id') vacandyId: string) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'findVacancyById' },
-      vacandyId,
-    );
+  @UseGuards(AuthGuard)
+  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(CompanyIdGuard)
+  @UseInterceptors(new NotFoundInterceptor('Vacancy not found'))
+  getVacancy(
+    @Param('id')
+    vacancyId: string,
+    @Query('company_id')
+    companyId: string,
+  ): Promise<VacancyReponseDto> {
+    return this.vacancyService
+      .send(
+        { role: 'vacancy', cmd: 'findVacancyById' },
+        {
+          vacancyId,
+          companyId,
+        },
+      )
+      .toPromise();
   }
 
-  // @UseGuards(AuthGuard)
-  // @Get('/vacancy')
-  // getVacancies() {
-  //   return this.vacancyService.send(
-  //     {
-  //       role: 'vacancy',
-  //       cmd: 'findAllVacancies',
-  //     },
-  //     {},
-  //   );
-  // }
-
-  @UseGuards(AuthGuard)
   @Get('/vacancy')
-  getVacancisOfCompany(@Query('company_id', CompanyIdPipe) companyId: string) {
-    console.log(companyId);
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'findVacancyByCompanyId' },
-      companyId,
-    );
+  @UseGuards(AuthGuard)
+  @UseGuards(CompanyIdGuard)
+  @UseInterceptors(new NotFoundInterceptor('No vacanies in target company'))
+  getVacancisOfCompany(
+    @Query('company_id') companyId: string,
+  ): Promise<VacancyReponseDto[]> {
+    return this.vacancyService
+      .send({ role: 'vacancy', cmd: 'findVacancyByCompanyId' }, companyId)
+      .toPromise();
   }
 
-  @UseGuards(AuthGuard)
   @Post('/vacancy')
-  createVacancy(@Body() createVacancyDto: any) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'create' },
-      createVacancyDto,
-    );
+  @UseGuards(AuthGuard)
+  @UseGuards(CompanyIdGuard)
+  createVacancy(
+    @Body(new DtoValidationPipe()) createVacancyDto: CreateVacancyDto,
+    @Query('company_id') companyId: string,
+  ): Promise<VacancyReponseDto> {
+    return this.vacancyService
+      .send(
+        { role: 'vacancy', cmd: 'create' },
+        {
+          companyId,
+          ...createVacancyDto,
+        },
+      )
+      .toPromise();
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(RoleGuard)
-  @UseGuards(AuthGuard)
   @Put('/vacancy/:id')
-  updateVacancy(@Param('id') id: string, @Body() updateVacancyDto: any) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'udpateVacancyById' },
-      {
-        id,
-        updateVacancyDto,
-      },
-    );
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
+  @UseGuards(RoleGuard)
+  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(CompanyIdGuard)
+  @UseInterceptors(new NotFoundInterceptor('Vacancy not found during update'))
+  updateVacancy(
+    @Param('id') vacancyId: string,
+    @Query('company_id') companyId: string,
+    @Body(new DtoValidationPipe()) updateVacancyDto: UpdateVacancyDto,
+  ): Promise<VacancyReponseDto> {
+    return this.vacancyService
+      .send(
+        { role: 'vacancy', cmd: 'udpateVacancyById' },
+        {
+          ...updateVacancyDto,
+          vacancyId,
+          companyId,
+        },
+      )
+      .toPromise();
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(RoleGuard)
-  @UseGuards(AuthGuard)
   @Delete('/vacancy/:id')
-  deleteVacancy(@Param('id') vacandyId: string) {
-    return this.vacancyService.send(
-      { role: 'vacancy', cmd: 'deleteVacancyById' },
-      vacandyId,
-    );
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard)
+  @UseGuards(RoleGuard)
+  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(CompanyIdGuard)
+  @UseInterceptors(new NotFoundInterceptor('Vacancy not found during delete'))
+  deleteVacancy(
+    @Param('id') vacancyId: string,
+    @Query('company_id') companyId: string,
+  ): Promise<VacancyReponseDto> {
+    return this.vacancyService
+      .send(
+        { role: 'vacancy', cmd: 'deleteVacancyById' },
+        {
+          vacancyId,
+          companyId,
+        },
+      )
+      .toPromise();
   }
 }

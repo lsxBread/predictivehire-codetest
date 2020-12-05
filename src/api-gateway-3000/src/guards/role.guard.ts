@@ -1,9 +1,15 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from 'src/decorators/roles.decorator';
 import { Role } from 'src/enum/role.enum';
 import jwt_decode from 'jwt-decode';
 
+@Injectable()
 export class RoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
@@ -21,8 +27,14 @@ export class RoleGuard implements CanActivate {
 
     const jwt = request.headers['authorization']?.split(' ')[1];
 
-    const { role: requestRole } = jwt_decode(jwt);
+    const { role: requestRole } = jwt_decode(jwt) as any;
 
-    return requiredRoles.some(role => requestRole === role);
+    if (!requiredRoles.some(role => requestRole === role)) {
+      throw new UnauthorizedException(
+        'The user has no authorization to perform request',
+      );
+    }
+
+    return true;
   }
 }

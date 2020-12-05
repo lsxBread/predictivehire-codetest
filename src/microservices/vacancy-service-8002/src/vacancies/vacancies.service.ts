@@ -1,8 +1,7 @@
 import { Model } from 'mongoose';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Vacancy, VacancyDocument } from './schemas/vacancy.schema';
-import { CreateVacancyDto } from './dtos/create-vacancy.dto';
 
 @Injectable()
 export class VacanciesService {
@@ -11,44 +10,44 @@ export class VacanciesService {
     private readonly vacancyModel: Model<VacancyDocument>,
   ) {}
 
-  async create(createVacancyDto: CreateVacancyDto): Promise<Vacancy> {
+  async create(createVacancyDto: any): Promise<Vacancy> {
     const createdVacancy = new this.vacancyModel(createVacancyDto);
     return createdVacancy.save();
   }
 
-  async findVacancyById(id: string): Promise<Vacancy> {
-    try {
-      const foundVacancy = this.vacancyModel.findById(id).exec();
-
-      if (!foundVacancy) {
-        throw new NotFoundException('Vacancy not found.');
-      }
-
-      return foundVacancy;
-    } catch (e) {
-      throw new NotFoundException('Vacancy not found.');
-    }
+  async findVacancyById(
+    vacancyId: string,
+    companyId: string,
+  ): Promise<Vacancy> {
+    return this.vacancyModel.findOne({ _id: vacancyId, companyId }).exec();
   }
 
   async findVacancyByCompanyId(id: string): Promise<Vacancy[]> {
     return this.vacancyModel.find({ companyId: id }).exec();
   }
 
-  async deleteVacancyId(id: string): Promise<Vacancy> {
-    return this.vacancyModel.findByIdAndDelete(id).exec();
+  async deleteVacancyId(
+    vacancyId: string,
+    companyId: string,
+  ): Promise<Vacancy> {
+    return this.vacancyModel
+      .findOneAndDelete({ _id: vacancyId, companyId })
+      .exec();
   }
 
   async findAllVacancies(): Promise<Vacancy[]> {
-    Logger.log('==========');
     return this.vacancyModel.find().exec();
   }
 
-  async updateVacancyById(payload): Promise<Vacancy> {
-    const { id, updateVacancyDto } = payload;
+  async updateVacancyById(
+    vacancyId: string,
+    companyId: string,
+    payload: any,
+  ): Promise<Vacancy> {
     return this.vacancyModel
       .findOneAndUpdate(
-        { _id: id },
-        { $set: { ...updateVacancyDto } },
+        { _id: vacancyId, companyId },
+        { $set: { ...payload } },
         { new: true },
       )
       .exec();
