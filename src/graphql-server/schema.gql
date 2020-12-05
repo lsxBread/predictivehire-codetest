@@ -1,0 +1,19 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserLoginDto {
+  username: String!
+  userId: ID!
+  companyId: ID!
+  role: String!
+  accessToken: String!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type Mutation {
+  login(password: String!, username: String!): UserLoginDto!
+}
