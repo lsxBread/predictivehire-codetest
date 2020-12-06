@@ -1,13 +1,14 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GraphQLModule } from '@nestjs/graphql';
-import { UsersModule } from './users/users.modules';
+import { UsersModule } from './users/users.module';
+import { VacanciesModule } from './vacancies/vacancies.module';
 
 @Module({
   imports: [
-    HttpModule,
     UsersModule,
+    VacanciesModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
     }),

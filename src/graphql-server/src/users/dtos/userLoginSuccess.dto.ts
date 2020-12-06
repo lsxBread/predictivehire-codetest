@@ -1,7 +1,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
-export class UserLoginDto {
+export class UserLoginSuccessDto {
   @Field(() => String)
   readonly username: string;
 
