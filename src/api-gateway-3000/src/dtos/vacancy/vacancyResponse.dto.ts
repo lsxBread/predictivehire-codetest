@@ -1,4 +1,4 @@
-export class VacancyReponseDto {
+export class VacancyResponseDto {
   _id: string;
   companyId: string;
   title: string;

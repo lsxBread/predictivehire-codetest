@@ -15,10 +15,6 @@ export class UsersService {
     return createdCat.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
-  }
-
   async findByUserName(username: string): Promise<User> {
     return this.userModel
       .findOne({

@@ -27,6 +27,19 @@ import controllers from './controllers';
       inject: [ConfigService],
     },
     {
+      provide: 'COMPANY_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('COMPANY_SERVICE_HOST'),
+            port: configService.get('COMPANY_SERVICE_PORT'),
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
+    {
       provide: 'AUTH_SERVICE',
       useFactory: (configService: ConfigService) => {
         return ClientProxyFactory.create({

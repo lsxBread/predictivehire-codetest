@@ -14,7 +14,6 @@ export class UsersController {
 
   @MessagePattern({ role: 'user', cmd: 'findByName' })
   async findUserByName(username: string) {
-    console.log(username);
     return this.usersService.findByUserName(username);
   }
 }

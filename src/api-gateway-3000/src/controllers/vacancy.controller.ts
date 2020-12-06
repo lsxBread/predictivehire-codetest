@@ -14,16 +14,16 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CompanyIdGuard } from 'src/guards/companyIdGuard';
-import { VacancyIdFormatGuard } from '../guards/vancanIdFormatGuard';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enum/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
 import { RoleGuard } from '../guards/role.guard';
-import { VacancyReponseDto } from '../dtos/vacancy/vacancyResponse.dto';
+import { VacancyResponseDto } from '../dtos/vacancy/vacancyResponse.dto';
 import { CreateVacancyDto } from '../dtos/vacancy/createVacancy.dto';
 import { UpdateVacancyDto } from '../dtos/vacancy/updateVacancy.dto';
+import { MongodbIdFormatGuard } from '../guards/mongodbIdFormat.guard';
 
 @Controller()
 export class VacancyController {
@@ -34,7 +34,7 @@ export class VacancyController {
 
   @Get('/vacancy/:id')
   @UseGuards(AuthGuard)
-  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(new MongodbIdFormatGuard('Vacancy id format is wrong', 'id'))
   @UseGuards(CompanyIdGuard)
   @UseInterceptors(new NotFoundInterceptor('Vacancy not found'))
   getVacancy(
@@ -42,7 +42,7 @@ export class VacancyController {
     vacancyId: string,
     @Query('company_id')
     companyId: string,
-  ): Promise<VacancyReponseDto> {
+  ): Promise<VacancyResponseDto> {
     return this.vacancyService
       .send(
         { role: 'vacancy', cmd: 'findVacancyById' },
@@ -58,9 +58,9 @@ export class VacancyController {
   @UseGuards(AuthGuard)
   @UseGuards(CompanyIdGuard)
   @UseInterceptors(new NotFoundInterceptor('No vacanies in target company'))
-  getVacancisOfCompany(
+  getVacanciesOfCompany(
     @Query('company_id') companyId: string,
-  ): Promise<VacancyReponseDto[]> {
+  ): Promise<VacancyResponseDto[]> {
     return this.vacancyService
       .send({ role: 'vacancy', cmd: 'findVacancyByCompanyId' }, companyId)
       .toPromise();
@@ -72,7 +72,7 @@ export class VacancyController {
   createVacancy(
     @Body(new DtoValidationPipe()) createVacancyDto: CreateVacancyDto,
     @Query('company_id') companyId: string,
-  ): Promise<VacancyReponseDto> {
+  ): Promise<VacancyResponseDto> {
     return this.vacancyService
       .send(
         { role: 'vacancy', cmd: 'create' },
@@ -88,14 +88,14 @@ export class VacancyController {
   @Roles(Role.Admin)
   @UseGuards(AuthGuard)
   @UseGuards(RoleGuard)
-  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(new MongodbIdFormatGuard('Vacancy id format is wrong', 'id'))
   @UseGuards(CompanyIdGuard)
   @UseInterceptors(new NotFoundInterceptor('Vacancy not found during update'))
   updateVacancy(
     @Param('id') vacancyId: string,
     @Query('company_id') companyId: string,
     @Body(new DtoValidationPipe()) updateVacancyDto: UpdateVacancyDto,
-  ): Promise<VacancyReponseDto> {
+  ): Promise<VacancyResponseDto> {
     return this.vacancyService
       .send(
         { role: 'vacancy', cmd: 'udpateVacancyById' },
@@ -112,13 +112,13 @@ export class VacancyController {
   @Roles(Role.Admin)
   @UseGuards(AuthGuard)
   @UseGuards(RoleGuard)
-  @UseGuards(VacancyIdFormatGuard)
+  @UseGuards(new MongodbIdFormatGuard('Vacancy id format is wrong', 'id'))
   @UseGuards(CompanyIdGuard)
   @UseInterceptors(new NotFoundInterceptor('Vacancy not found during delete'))
   deleteVacancy(
     @Param('id') vacancyId: string,
     @Query('company_id') companyId: string,
-  ): Promise<VacancyReponseDto> {
+  ): Promise<VacancyResponseDto> {
     return this.vacancyService
       .send(
         { role: 'vacancy', cmd: 'deleteVacancyById' },

@@ -16,6 +16,8 @@ services:
       - PORT=${API_GATEWAY_PORT}
       - USER_SERVICE_HOST=${USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - COMPANY_SERVICE_HOST=${COMPANY_SERVICE_HOST}
+      - COMPANY_SERVICE_PORT=${COMPANY_SERVICE_PORT}
       - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
       - AUTH_SERVICE_TCP_PORT=${AUTH_SERVICE_TCP_PORT}
       - VACANCY_SERVICE_PORT=${VACANCY_SERVICE_PORT}
@@ -25,6 +27,7 @@ services:
     depends_on:
       - user-service
       - auth-service
+      - company-service
 
   auth-service:
     container_name: dev-auth-service
@@ -87,6 +90,26 @@ services:
     depends_on:
       - vacancy-service-mongo-db
 
+  company-service:
+    container_name: dev-company-service
+    build:
+      context: ./src/microservices/company-service-8003
+      dockerfile: Dockerfile.dev
+      args:
+        - PORT=${COMPANY_SERVICE_PORT}
+    ports:
+      - '${COMPANY_SERVICE_PORT}:${COMPANY_SERVICE_PORT}'
+    volumes:
+      - ./src/microservices/company-service-8003:/usr/src/app
+    environment:
+      - PORT=${COMPANY_SERVICE_PORT}
+      - DB_URL=mongodb://dev-company-service-mongo-db/company
+    networks:
+      - predictivehire
+      - company-service-private-network
+    depends_on:
+      - company-service-mongo-db
+
   user-service-mongo-db:
     image: mongo
     container_name: dev-user-service-mongo-db
@@ -109,11 +132,24 @@ services:
     networks:
       - vacancy-service-private-network
 
+  company-service-mongo-db:
+    image: mongo
+    container_name: dev-company-service-mongo-db
+    volumes:
+      - companys_data:/data/configdb
+      - companys_data:/data/db
+    ports:
+      - 27019:27017
+    networks:
+      - company-service-private-network
+
 networks:
   predictivehire:
   user-service-private-network:
   vacancy-service-private-network:
+  company-service-private-network:
 
 volumes:
   users_data:
   vacancies_data:
+  companys_data:
