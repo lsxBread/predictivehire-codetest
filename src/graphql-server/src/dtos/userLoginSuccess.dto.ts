@@ -3,17 +3,17 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 @ObjectType()
 export class UserLoginSuccessDto {
   @Field(() => String)
-  readonly username: string;
-
-  @Field(() => ID)
-  readonly userId: string;
-
-  @Field(() => ID)
-  readonly companyId: string;
+  username: string;
 
   @Field(() => String)
-  readonly role: string;
+  userId: string;
 
   @Field(() => String)
-  readonly accessToken: string;
+  companyId: string;
+
+  @Field(() => String)
+  role: string;
+
+  @Field(() => String)
+  accessToken: string;
 }

@@ -3,17 +3,17 @@ import { Field, ID, InputType } from '@nestjs/graphql';
 @InputType()
 export class UserRegisterInput {
   @Field(() => String)
-  readonly name: string;
+  name: string;
 
   @Field(() => String)
-  readonly username: string;
+  username: string;
 
   @Field(() => String)
-  readonly password: string;
+  password: string;
 
   @Field(() => String)
-  readonly role: string;
+  role: string;
 
   @Field(() => ID)
-  readonly companyId: string;
+  companyId: string;
 }

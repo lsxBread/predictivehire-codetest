@@ -1,0 +1,85 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Vacancy {
+  _id: String!
+  title: String!
+  description: String!
+  expireAt: String!
+  company: Company!
+}
+
+type User {
+  _id: String!
+  name: String!
+  username: String!
+  role: String!
+  company: Company!
+}
+
+type Company {
+  _id: String!
+  name: String!
+  address: String!
+  vacancies: [Vacancy!]!
+  users: [User!]!
+}
+
+type UserLoginSuccessDto {
+  username: String!
+  userId: String!
+  companyId: String!
+  role: String!
+  accessToken: String!
+}
+
+type UserRegisterSuccessDto {
+  _id: String!
+  name: String!
+  username: String!
+  role: String!
+  companyId: String!
+}
+
+type VacancyCreateSuccessDto {
+  _id: String!
+  title: String!
+  description: String!
+  expireAt: String!
+}
+
+type Query {
+  company(id: String!): Company!
+  sayHello: String!
+  vacancy(companyId: String!, vacancyId: String!): Vacancy!
+}
+
+type Mutation {
+  login(password: String!, username: String!): UserLoginSuccessDto!
+  register(input: UserRegisterInput!): UserRegisterSuccessDto!
+  createVacancy(input: VacancyCreateInput!): VacancyCreateSuccessDto!
+  deleteVacancy(companyId: String!, vacancyId: String!): Vacancy!
+  updateVacancy(input: VacancyUpdateInput!, companyId: String!, vacancyId: String!): Vacancy!
+}
+
+input UserRegisterInput {
+  name: String!
+  username: String!
+  password: String!
+  role: String!
+  companyId: ID!
+}
+
+input VacancyCreateInput {
+  title: String!
+  description: String!
+  expireAt: String!
+  companyId: String!
+}
+
+input VacancyUpdateInput {
+  title: String
+  description: String
+  expireAt: String
+}

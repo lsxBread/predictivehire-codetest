@@ -1,10 +1,11 @@
 import { Query, Resolver, Mutation, Args } from '@nestjs/graphql';
-import { UsersService } from './users.service';
-import { RegisterUserDto } from './dtos/registerUser.dto';
-import { UserRegisterInput } from './inputs/userRegister.input';
-import { UserLoginSuccessDto } from './dtos/userLoginSuccess.dto';
+import { UsersService } from '../services/users.service';
+import { UserRegisterInput } from '../inputs/userRegister.input';
+import { UserLoginSuccessDto } from '../dtos/userLoginSuccess.dto';
+import { User } from '../models/user.model';
+import { UserRegisterSuccessDto } from '../dtos/userRegisterSuccess.dto';
 
-@Resolver()
+@Resolver(of => User)
 export class UserResolver {
   constructor(private readonly userService: UsersService) {}
 
@@ -21,7 +22,7 @@ export class UserResolver {
     return this.userService.login(username, password);
   }
 
-  @Mutation(() => RegisterUserDto)
+  @Mutation(returns => UserRegisterSuccessDto)
   async register(@Args('input') input: UserRegisterInput) {
     return this.userService.register(input);
   }

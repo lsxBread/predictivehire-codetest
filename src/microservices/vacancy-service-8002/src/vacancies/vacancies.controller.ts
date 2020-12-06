@@ -31,7 +31,7 @@ export class VacanciesController {
     return this.vacanciesService.findVacancyByCompanyId(id);
   }
 
-  @MessagePattern({ role: 'vacancy', cmd: 'udpateVacancyById' })
+  @MessagePattern({ role: 'vacancy', cmd: 'updateVacancyById' })
   async updateVacancyById(updateVacancyDto: UpdateVacancyDto) {
     const { vacancyId, companyId, ...rest } = updateVacancyDto;
     return this.vacanciesService.updateVacancyById(vacancyId, companyId, rest);

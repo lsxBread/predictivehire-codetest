@@ -94,11 +94,11 @@ export class VacancyController {
   updateVacancy(
     @Param('id') vacancyId: string,
     @Query('company_id') companyId: string,
-    @Body(new DtoValidationPipe()) updateVacancyDto: UpdateVacancyDto,
+    @Body() updateVacancyDto: UpdateVacancyDto,
   ): Promise<VacancyResponseDto> {
     return this.vacancyService
       .send(
-        { role: 'vacancy', cmd: 'udpateVacancyById' },
+        { role: 'vacancy', cmd: 'updateVacancyById' },
         {
           ...updateVacancyDto,
           vacancyId,
