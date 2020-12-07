@@ -16,8 +16,6 @@ RUN yarn build
 RUN rm -r src
 
 # Assign `npm run start:prod` as the default command to run when booting the container
-ARG HTTP_PORT
-ARG TCP_PORT
-EXPOSE ${HTTP_PORT}
-EXPOSE ${TCP_PORT}
+ARG PORT
+EXPOSE ${PORT}
 CMD ["yarn", "start:prod"]

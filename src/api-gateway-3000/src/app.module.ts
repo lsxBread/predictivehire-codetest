@@ -46,7 +46,7 @@ import controllers from './controllers';
           transport: Transport.TCP,
           options: {
             host: configService.get('AUTH_SERVICE_HOST'),
-            port: configService.get('AUTH_SERVICE_TCP_PORT'),
+            port: configService.get('AUTH_SERVICE_PORT'),
           },
         });
       },

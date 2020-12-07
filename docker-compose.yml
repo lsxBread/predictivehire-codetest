@@ -2,50 +2,146 @@ version: '2'
 
 services:
   api-gateway:
-    container_name: api-gateway
+    container_name: prod-api-gateway-3000
     build:
       context: ./src/api-gateway-3000
+      dockerfile: Dockerfile
       args:
         - PORT=${API_GATEWAY_PORT}
+    image: prod-api-gateway-image
     ports:
       - '${API_GATEWAY_PORT}:${API_GATEWAY_PORT}'
     environment:
       - PORT=${API_GATEWAY_PORT}
       - USER_SERVICE_HOST=${USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - COMPANY_SERVICE_HOST=${COMPANY_SERVICE_HOST}
+      - COMPANY_SERVICE_PORT=${COMPANY_SERVICE_PORT}
+      - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
+      - AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
+      - VACANCY_SERVICE_PORT=${VACANCY_SERVICE_PORT}
+      - VACANCY_SERVICE_HOST=${VACANCY_SERVICE_HOST}
     networks:
       - predictivehire
     depends_on:
       - user-service
+      - auth-service
+      - company-service
+
+  auth-service:
+    container_name: prod-auth-service-8080
+    build:
+      context: ./src/microservices/auth-service-8080
+      dockerfile: Dockerfile
+      args:
+        - PORT=${AUTH_SERVICE_PORT}
+    image: prod-auth-service-image
+    ports:
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+    environment:
+      - PORT=${AUTH_SERVICE_PORT}
+      - USER_SERVICE_HOST=${USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+    networks:
+      - predictivehire
 
   user-service:
-    container_name: user-service
+    container_name: prod-user-service-8001
     build:
       context: ./src/microservices/user-service-8001
+      dockerfile: Dockerfile
       args:
         - PORT=${USER_SERVICE_PORT}
+    image: prod-user-service-image
     ports:
       - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
     environment:
       - PORT=${USER_SERVICE_PORT}
+      - DB_URL=mongodb://prod-user-service-mongo-db/users
     networks:
       - predictivehire
+      - user-service-private-network
+    depends_on:
+      - user-service-mongo-db
 
-  auth-service:
-    container_name: auth-service
+  vacancy-service:
+    container_name: prod-vacancy-service-8002
     build:
-      context: ./src/microservices/auth-service-8080
+      context: ./src/microservices/vacancy-service-8002
+      dockerfile: Dockerfile
       args:
-        - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
-        - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+        - PORT=${VACANCY_SERVICE_PORT}
+    image: prod-vacancy-service-image
     ports:
-      - '${AUTH_SERVICE_HTTP_PORT}:${AUTH_SERVICE_HTTP_PORT}'
-      - '${AUTH_SERVICE_TCP_PORT}:${AUTH_SERVICE_TCP_PORT}'
+      - '${VACANCY_SERVICE_PORT}:${VACANCY_SERVICE_PORT}'
     environment:
-      - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
-      - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+      - PORT=${VACANCY_SERVICE_PORT}
+      - DB_URL=mongodb://prod-vacancy-service-mongo-db/vacancy
     networks:
       - predictivehire
+      - vacancy-service-private-network
+    depends_on:
+      - vacancy-service-mongo-db
+
+  company-service:
+    container_name: prod-company-service-8003
+    build:
+      context: ./src/microservices/company-service-8003
+      dockerfile: Dockerfile
+      args:
+        - PORT=${COMPANY_SERVICE_PORT}
+    image: prod-company-service-image
+    ports:
+      - '${COMPANY_SERVICE_PORT}:${COMPANY_SERVICE_PORT}'
+    environment:
+      - PORT=${COMPANY_SERVICE_PORT}
+      - DB_URL=mongodb://prod-company-service-mongo-db/company
+    networks:
+      - predictivehire
+      - company-service-private-network
+    depends_on:
+      - company-service-mongo-db
+
+  user-service-mongo-db:
+    image: mongo
+    container_name: prod-user-service-mongo-db
+    volumes:
+      - users_data:/data/configdb
+      - users_data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - user-service-private-network
+
+  vacancy-service-mongo-db:
+    image: mongo
+    container_name: prod-vacancy-service-mongo-db
+    volumes:
+      - vacancies_data:/data/configdb
+      - vacancies_data:/data/db
+    ports:
+      - 27018:27017
+    networks:
+      - vacancy-service-private-network
+
+  company-service-mongo-db:
+    image: mongo
+    container_name: prod-company-service-mongo-db
+    volumes:
+      - companys_data:/data/configdb
+      - companys_data:/data/db
+    ports:
+      - 27019:27017
+    networks:
+      - company-service-private-network
 
 networks:
   predictivehire:
+  user-service-private-network:
+  vacancy-service-private-network:
+  company-service-private-network:
+
+volumes:
+  users_data:
+  vacancies_data:
+  companys_data:

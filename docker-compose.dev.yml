@@ -19,7 +19,7 @@ services:
       - COMPANY_SERVICE_HOST=${COMPANY_SERVICE_HOST}
       - COMPANY_SERVICE_PORT=${COMPANY_SERVICE_PORT}
       - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
-      - AUTH_SERVICE_TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+      - AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
       - VACANCY_SERVICE_PORT=${VACANCY_SERVICE_PORT}
       - VACANCY_SERVICE_HOST=${VACANCY_SERVICE_HOST}
     networks:
@@ -35,16 +35,13 @@ services:
       context: ./src/microservices/auth-service-8080
       dockerfile: Dockerfile.dev
       args:
-        - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
-        - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+        - PORT=${AUTH_SERVICE_PORT}
     ports:
-      - '${AUTH_SERVICE_HTTP_PORT}:${AUTH_SERVICE_HTTP_PORT}'
-      - '${AUTH_SERVICE_TCP_PORT}:${AUTH_SERVICE_TCP_PORT}'
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
     volumes:
       - ./src/microservices/auth-service-8080:/usr/src/app
     environment:
-      - HTTP_PORT=${AUTH_SERVICE_HTTP_PORT}
-      - TCP_PORT=${AUTH_SERVICE_TCP_PORT}
+      - PORT=${AUTH_SERVICE_PORT}
       - USER_SERVICE_HOST=${USER_SERVICE_HOST}
       - USER_SERVICE_PORT=${USER_SERVICE_PORT}
     networks:
