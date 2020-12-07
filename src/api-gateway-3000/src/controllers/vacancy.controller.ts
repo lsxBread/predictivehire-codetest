@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CompanyIdGuard } from 'src/guards/companyIdGuard';
+import { CompanyIdGuard } from '../guards/companyIdGuard';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 import { Roles } from '../decorators/roles.decorator';

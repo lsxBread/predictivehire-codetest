@@ -6,7 +6,6 @@ import {
   Context,
   ResolveField,
   Parent,
-  Info,
 } from '@nestjs/graphql';
 import { VacanciesService } from '../services/vacancies.service';
 import { VacancyCreateSuccessDto } from '../dtos/vacancyCreateSuccess.dto';

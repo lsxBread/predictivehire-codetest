@@ -6,8 +6,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { LoginDto } from 'src/dtos/auth/login.dto';
-import { NotFoundInterceptor } from 'src/interceptors/NotFoundInterceptor';
+import { LoginDto } from '../dtos/auth/login.dto';
+import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 
 @Controller()

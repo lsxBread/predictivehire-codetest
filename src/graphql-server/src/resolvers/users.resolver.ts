@@ -6,7 +6,7 @@ import { User } from '../models/user.model';
 import { UserRegisterSuccessDto } from '../dtos/userRegisterSuccess.dto';
 
 @Resolver(of => User)
-export class UserResolver {
+export class UsersResolver {
   constructor(private readonly userService: UsersService) {}
 
   @Query(() => String)
