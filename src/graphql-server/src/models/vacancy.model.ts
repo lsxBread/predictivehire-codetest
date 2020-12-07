@@ -4,7 +4,7 @@ import { Company } from './company.model';
 @ObjectType()
 export class Vacancy {
   @Field(() => String)
-  _id: number;
+  _id: string;
 
   @Field(() => String)
   title: string;

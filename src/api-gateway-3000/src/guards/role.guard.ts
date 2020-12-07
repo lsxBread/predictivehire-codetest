@@ -27,6 +27,10 @@ export class RoleGuard implements CanActivate {
 
     const jwt = request.headers['authorization']?.split(' ')[1];
 
+    if (!jwt) {
+      throw new UnauthorizedException('No accessToken');
+    }
+
     const { role: requestRole } = jwt_decode(jwt) as any;
 
     if (!requiredRoles.some(role => requestRole === role)) {

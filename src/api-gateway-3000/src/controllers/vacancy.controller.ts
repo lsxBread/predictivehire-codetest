@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Inject,
-  Logger,
   Param,
   Post,
   Put,
@@ -13,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CompanyIdGuard } from '../guards/companyIdGuard';
+import { CompanyIdGuard } from '../guards/companyId.guard';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { DtoValidationPipe } from '../pipes/dtoValidation.pipe';
 import { Roles } from '../decorators/roles.decorator';
@@ -29,7 +28,6 @@ import { MongodbIdFormatGuard } from '../guards/mongodbIdFormat.guard';
 export class VacancyController {
   constructor(
     @Inject('VACANCY_SERVICE') private readonly vacancyService: ClientProxy,
-    private readonly logger: Logger,
   ) {}
 
   @Get('/vacancy/:id')

@@ -21,6 +21,8 @@ export class AuthController {
     new NotFoundInterceptor('Correct username and password not found'),
   )
   registerUser(@Body(new DtoValidationPipe()) loginDto: LoginDto) {
-    return this.authService.send({ role: 'auth', cmd: 'login' }, loginDto);
+    return this.authService
+      .send({ role: 'auth', cmd: 'login' }, loginDto)
+      .toPromise();
   }
 }

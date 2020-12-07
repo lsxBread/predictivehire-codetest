@@ -13,6 +13,11 @@ export class CompanyIdGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { query } = request;
     const jwt = request.headers['authorization']?.split(' ')[1];
+
+    if (!jwt) {
+      throw new UnauthorizedException('No accessToken');
+    }
+
     const { companyId } = jwt_decode(jwt) as any;
 
     if (!query.company_id) {
