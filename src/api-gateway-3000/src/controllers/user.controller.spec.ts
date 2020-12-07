@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { UserController } from './User.controller';
 import { ClientProxy, ClientProxyFactory } from '@nestjs/microservices';
 import { of } from 'rxjs';
+import { BadRequestException } from '@nestjs/common';
 
 describe('API Gateway - UserController', () => {
   let userController: UserController;

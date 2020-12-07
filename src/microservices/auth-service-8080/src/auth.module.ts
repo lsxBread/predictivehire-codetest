@@ -5,6 +5,7 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+
 @Module({
   imports: [
     PassportModule,

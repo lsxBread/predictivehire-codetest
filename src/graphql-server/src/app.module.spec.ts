@@ -1,12 +1,17 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Test, TestingModule } from '@nestjs/testing';
 import { GraphQLModule } from '@nestjs/graphql';
 
 describe('AppModule', () => {
-  it('should be defined', async done => {
-    const app = await NestFactory.createApplicationContext(AppModule);
-    expect(app).toBeDefined();
-    expect(app.get(GraphQLModule)).toBeDefined();
-    done();
+  let module: TestingModule;
+
+  beforeEach(async () => {
+    module = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+  });
+
+  it('should be defined', async () => {
+    expect(module.get(GraphQLModule)).toBeDefined();
   });
 });

@@ -26,7 +26,7 @@ module.exports = {
       './node_modules/jest-html-reporter',
       {
         pageTitle: 'Test Report',
-        outputPath: 'coverage/e2e-report.html',
+        outputPath: 'coverage/test-report.html',
       },
     ],
   ],

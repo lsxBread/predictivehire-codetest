@@ -6,7 +6,6 @@ export class AuthGuard implements CanActivate {
   constructor(
     @Inject('AUTH_SERVICE')
     private readonly client: ClientProxy,
-    private readonly logger: Logger,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -20,7 +19,6 @@ export class AuthGuard implements CanActivate {
         .pipe(timeout(5000))
         .toPromise<boolean>();
     } catch (err) {
-      this.logger.error(err);
       return false;
     }
   }
