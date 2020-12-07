@@ -1,28 +1,23 @@
 module.exports = {
-  "roots": [
-    "<rootDir>/src"
+  roots: ['<rootDir>/src'],
+  testMatch: [
+    '**/__tests__/**/*.+(ts|tsx|js)',
+    '**/?(*.)+(spec|test).+(ts|tsx|js)',
   ],
-  "testMatch": [
-    "**/__tests__/**/*.+(ts|tsx|js)",
-    "**/?(*.)+(spec|test).+(ts|tsx|js)"
-  ],
-  "transform": {
-    "^.+\\.(ts|tsx)$": "ts-jest"
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
   },
-  // "testResultsProcessor": "jest-sonar-reporter",
-  "collectCoverage": true,
-  "collectCoverageFrom": [
-    "**/*.{ts,js}",
-    "!**/node_modules/**"
-  ],
-  "coverageDirectory": "dist",
-  "coverageReporters": ["lcov"],
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.ts', '!**/dist/**', '!**/test/**'],
+  coveragePathIgnorePatterns: ['node_modules', 'index.ts', 'main.ts'],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov'],
   coverageThreshold: {
     global: {
       functions: 90,
       lines: 90,
       statements: 90,
-      branches: 90
+      branches: 90,
     },
   },
   reporters: [
@@ -31,8 +26,8 @@ module.exports = {
       './node_modules/jest-html-reporter',
       {
         pageTitle: 'Test Report',
-        'outputPath': 'dist/test-report.html'
+        outputPath: 'coverage/test-report.html',
       },
     ],
   ],
-}
+};

@@ -2,17 +2,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { VacanciesResolver } from './vacancies.resolver';
 import { VacanciesService } from '../services/vacancies.service';
 import { CompaniesService } from '../services/companies.service';
-import { UserRegisterInput } from '../inputs/userRegister.input';
+import { VacancyCreateInput } from '../inputs/VacancyCreate.input';
 
 describe('Vacancies Resolver', () => {
   let resolver: VacanciesResolver;
 
-  const mockLoginSuccess = {
-    accessToken: 'accessToken',
+  const mockVacancy = {
+    title: 'mockTitle',
+    description: 'mockDescription',
+    expireAt: 'mockExpireAt',
   };
 
-  const mockRegisterSuccess = {
-    name: 'mockedName',
+  const mockCompany = {
+    name: 'mockName',
+    address: 'mockAddress',
   };
 
   beforeEach(async () => {
@@ -20,39 +23,106 @@ describe('Vacancies Resolver', () => {
       providers: [
         VacanciesResolver,
         {
-          provide: UsersService,
+          provide: VacanciesService,
           useFactory: () => ({
-            login: jest.fn(
-              (username: string, password: string) => mockLoginSuccess,
+            findVacancyById: jest.fn(
+              (vacancyId: string, companyId: string, auth: string) =>
+                mockVacancy,
             ),
-            register: jest.fn(
-              (input: UserRegisterInput) => mockRegisterSuccess,
+            createVacancy: jest.fn(
+              (input: VacancyCreateInput, auth: string) => mockVacancy,
             ),
+            deleteVacancyById: jest.fn(
+              (vacancyId: string, companyId: string, auth: string) =>
+                mockVacancy,
+            ),
+            updateVacancyById: jest.fn(
+              (
+                vacancyId: string,
+                companyId: string,
+                input: VacancyCreateInput,
+                auth: string,
+              ) => mockVacancy,
+            ),
+          }),
+        },
+        {
+          provide: CompaniesService,
+          useFactory: () => ({
+            findCompanyById: jest.fn((companyId: string) => mockCompany),
           }),
         },
       ],
     }).compile();
 
-    resolver = module.get<UserResolver>(UserResolver);
+    resolver = module.get<VacanciesResolver>(VacanciesResolver);
   });
 
   it('should be defined', () => {
     expect(resolver).toBeDefined();
   });
 
-  describe('login', () => {
-    it('should return token', async () => {
-      expect(await resolver.login('username', 'password')).toEqual(
-        mockLoginSuccess,
-      );
+  describe('getVacancy', () => {
+    it('should return single vacancy', async () => {
+      expect(
+        await resolver.vacancy(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+        ),
+      ).toEqual(mockVacancy);
     });
   });
 
-  describe('register', () => {
-    it('should return user info', async () => {
-      expect(await resolver.register({} as UserRegisterInput)).toEqual(
-        mockRegisterSuccess,
-      );
+  describe('createVacancy', () => {
+    it('should return created vacancy', async () => {
+      expect(
+        await resolver.createVacancy(expect.anything(), expect.anything()),
+      ).toEqual(mockVacancy);
+    });
+  });
+
+  describe('deleteVacancy', () => {
+    it('should return deleted vacancy', async () => {
+      expect(
+        await resolver.deleteVacancy(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+        ),
+      ).toEqual(mockVacancy);
+    });
+  });
+
+  describe('updateVacancy', () => {
+    it('should return updated vacancy', async () => {
+      expect(
+        await resolver.updateVacancy(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+        ),
+      ).toEqual(mockVacancy);
+    });
+  });
+
+  describe('updateVacancy', () => {
+    it('should return updated vacancy', async () => {
+      expect(
+        await resolver.updateVacancy(
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+          expect.anything(),
+        ),
+      ).toEqual(mockVacancy);
+    });
+  });
+
+  describe('get company of vacancy', () => {
+    it('should return single company', async () => {
+      expect(await resolver.company(expect.anything())).toEqual(mockCompany);
     });
   });
 });
