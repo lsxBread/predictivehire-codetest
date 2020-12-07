@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { VacancyCreateInput } from '../inputs/VacancyCreate.input';
-import { VacancyUpdateInput } from '../inputs/VacancyUpdate.input';
+import { VacancyCreateInput } from '../inputs/vacancyCreate.input';
+import { VacancyUpdateInput } from '../inputs/vacancyUpdate.input';
 
 @Injectable()
 export class VacanciesService {

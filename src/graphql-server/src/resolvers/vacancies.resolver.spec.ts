@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { VacanciesResolver } from './vacancies.resolver';
 import { VacanciesService } from '../services/vacancies.service';
 import { CompaniesService } from '../services/companies.service';
-import { VacancyCreateInput } from '../inputs/VacancyCreate.input';
+import { VacancyCreateInput } from '../inputs/vacancyCreate.input';
 
 describe('Vacancies Resolver', () => {
   let resolver: VacanciesResolver;

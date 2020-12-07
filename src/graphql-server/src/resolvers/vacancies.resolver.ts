@@ -9,11 +9,11 @@ import {
 } from '@nestjs/graphql';
 import { VacanciesService } from '../services/vacancies.service';
 import { VacancyCreateSuccessDto } from '../dtos/vacancyCreateSuccess.dto';
-import { VacancyCreateInput } from '../inputs/VacancyCreate.input';
+import { VacancyCreateInput } from '../inputs/vacancyCreate.input';
 import { Vacancy } from '../models/vacancy.model';
 import { Company } from '../models/company.model';
 import { CompaniesService } from '../services/companies.service';
-import { VacancyUpdateInput } from '../inputs/VacancyUpdate.input';
+import { VacancyUpdateInput } from '../inputs/vacancyUpdate.input';
 
 @Resolver(of => Vacancy)
 export class VacanciesResolver {

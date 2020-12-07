@@ -56,11 +56,17 @@ type Query {
 }
 
 type Mutation {
+  createCompany(input: CompanyCreateInput!): Company!
   login(password: String!, username: String!): UserLoginSuccessDto!
   register(input: UserRegisterInput!): UserRegisterSuccessDto!
   createVacancy(input: VacancyCreateInput!): VacancyCreateSuccessDto!
   deleteVacancy(companyId: String!, vacancyId: String!): Vacancy!
   updateVacancy(input: VacancyUpdateInput!, companyId: String!, vacancyId: String!): Vacancy!
+}
+
+input CompanyCreateInput {
+  name: String!
+  address: String!
 }
 
 input UserRegisterInput {
