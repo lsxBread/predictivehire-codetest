@@ -46,18 +46,18 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
             <td>/login</td>
             <td>
                 <code>
-                    { "username": String!,
+                    { "username": String,
                      "password": String!,
                      }
                 </code>
             </td>
             <td>
                 <code>
-                    { username: String!
-                        userId: String!
-                        companyId: String!
-                        role: String!
-                        accessToken: String!
+                    { username: String
+                        userId: String
+                        companyId: String
+                        role: String
+                        accessToken: String
                      }
                 </code>
             </td>
@@ -80,6 +80,7 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
         <th>Method</th>
         <th>API</th>
         <th>Payload</th>
+        <th>Return</th>
         <th>Authorization</th>
         <th>GraphQL</th>
       </tr>
@@ -90,10 +91,20 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
             <td>/company</td>
             <td>
                 <code>
-                    { "name": "",
-                     "address": "",
+                    { "name": String,
+                     "address": String,
                      }
                 </code>
+            </td>
+            <td>
+            <code>
+            {
+            _id: string;
+              name: string;
+              address: string;
+              __v: number;
+            }
+            </code>
             </td>
             <td>false</td>
             <td>
@@ -109,6 +120,16 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
             <td>/company/{id}</td>
             <td>
             </td>
+              <td>
+                        <code>
+                        {
+                        _id: string;
+                          name: string;
+                          address: string;
+                          __v: number;
+                        }
+                        </code>
+                        </td>
             <td>false</td>
             <td>
               query{
@@ -128,6 +149,7 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
         <th>Method</th>
         <th>API</th>
         <th>Payload</th>
+        <th>Return</th>
         <th>Authorization</th>
         <th>GraphQL</th>
       </tr>
@@ -138,13 +160,24 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
             <td>/register</td>
             <td>
                 <code>
-                    { "name": "",
-                     "username": "",
-                     "password": "",
-                     "role": "",
-                     "companyId": ""
+                    { "name": String,
+                     "username": String
+                     "password": String
+                     "role": String
+                     "companyId": String
                      }
                 </code>
+            </td>
+            <td>
+            <code>
+            {
+             _id: string;
+              name: string;
+              username: string;
+              role: string;
+              __v: number;
+            }
+            </code>
             </td>
             <td>false</td>
             <td>
@@ -157,6 +190,116 @@ The service folder is named by [service name]-[service default port]. E.g. api-g
         </tr>
     </tbody>
   </table>
+  
+ #### Vacancy controller
+ <table>
+     <thead>
+       <tr>
+         <th>Method</th>
+         <th>API</th>
+         <th>Payload</th>
+         <th>Return</th></the>
+         <th>Authorization</th>
+         <th>GraphQL</th>
+       </tr>
+     </thead>
+     <tbody>
+         <tr>
+              <td>GET</td>
+              <td>/vacancy/{vacancyId}?company_id={companyId}</td>
+              <td>
+                  <code>
+                  </code>
+              </td>
+              <td><code>{id: String
+                    title: String
+                    description: String
+                    expireAt: String}</code></td>
+              <td>true</td>
+              <td>
+                <code>
+                query{
+                  vacancy(companyId:"", vacancyId:""){
+                    title
+                  }
+                }
+                 </code>
+              </td>
+          </tr>
+         <tr>
+              <td>POST</td>
+              <td>/vacancy?company_id={companyId}</td>
+              <td>
+                  <code>
+                      { "title": String 
+                       "description": String
+                       "expireAt": ISOTimeString,
+                       }
+                  </code>
+              </td>
+              <td><code>{id: String
+                    title: String
+                    description: String
+                    expireAt: String}</code></td>
+              <td>true & Admin</td>
+              <td>
+                <code>
+                 mutation{
+                   createVacancy(input:{title:"", description:"", expireAt:"", companyId:""}){
+                 		title
+                   }
+                 }
+                 </code>
+              </td>
+          </tr>
+         <tr>
+              <td>PUT</td>
+              <td>/vacancy/{vacanyId}?company_id={companyId}</td>
+              <td>
+                  <code>
+                      { "title": String 
+                       "description": String
+                       "expireAt": ISOTimeString,
+                       }
+                  </code>
+              </td>
+              <td><code>{id: String
+                    title: String
+                    description: String
+                    expireAt: String}</code></td>
+              <td>true & Admin</td>
+              <td>
+                <code>
+                mutation{
+                	updateVacancy(input:{title:"", description:"", expireAt:""}, companyId:"", vacancyId:""){
+                		title
+                  }
+                }
+                 </code>
+              </td>
+          </tr>
+         <tr>
+             <td>DELETE</td>
+             <td>/vacancy/{vacanyId}?company_id={id}</td>
+             <td>
+                 <code>
+                 </code>
+             </td>
+              <td><code>{id: String
+                    title: String
+                    description: String
+                    expireAt: String}</code></td>
+             <td>true & Admin</td>
+             <td>
+               mutation{
+                 deleteVacancy(companyId:"", vacancyId:""){
+                   title
+                 }
+               }
+             </td>
+         </tr>
+     </tbody>
+   </table>
 
 ## How to Run
 
