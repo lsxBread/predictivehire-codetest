@@ -26,8 +26,137 @@ Deployment is done with containers in mind. A Docker Compose file along with Doc
 ## Naming convention
 The service folder is named by [service name]-[service default port]. E.g. api-gateway-3000 
 
-## Naming convention
-The service folder is named by [service name]-[service default port]. E.g. api-gateway-3000 
+## RESTful API Desgin 
+
+#### Auth controller
+<table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>API</th>
+        <th>Payload</th>
+        <th>Return</th>
+        <th>Authorization</th>
+        <th>GraphQL</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>POST</td>
+            <td>/login</td>
+            <td>
+                <code>
+                    { "username": String!,
+                     "password": String!,
+                     }
+                </code>
+            </td>
+            <td>
+                <code>
+                    { username: String!
+                        userId: String!
+                        companyId: String!
+                        role: String!
+                        accessToken: String!
+                     }
+                </code>
+            </td>
+            <td>false</td>
+            <td>
+               mutation{
+                 login(username:"leo", password:"123") {
+                   accessToken
+                 }
+               }
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+#### Company controller
+<table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>API</th>
+        <th>Payload</th>
+        <th>Authorization</th>
+        <th>GraphQL</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>POST</td>
+            <td>/company</td>
+            <td>
+                <code>
+                    { "name": "",
+                     "address": "",
+                     }
+                </code>
+            </td>
+            <td>false</td>
+            <td>
+               mutation {
+                 createCompany(input:{name:"predictivehire", address:"ascot st"}) {
+                   _id
+                 }
+               }
+            </td>
+        </tr>
+         <tr>
+            <td>GET</td>
+            <td>/company/{id}</td>
+            <td>
+            </td>
+            <td>false</td>
+            <td>
+              query{
+                company(id:"5fcf02c2b494590029b333a6") {
+                  name
+                }
+              }
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+#### User controller
+<table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>API</th>
+        <th>Payload</th>
+        <th>Authorization</th>
+        <th>GraphQL</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>POST</td>
+            <td>/register</td>
+            <td>
+                <code>
+                    { "name": "",
+                     "username": "",
+                     "password": "",
+                     "role": "",
+                     "companyId": ""
+                     }
+                </code>
+            </td>
+            <td>false</td>
+            <td>
+                mutation{
+                  register(input:{name:"Bob Markle", username:"bob", password:"bob", role:"user", companyId:""}){
+                    _id
+                  }
+                }
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
 ## How to Run
 
@@ -90,7 +219,7 @@ mutation{
 }
 ```
 
-Once abvoe steps are done, you can play with the app according to the API Usage instruction.
+Once abvoe steps are done, you can play with the app according to the RESTful API Desgin instruction.
 
 ### Concerns
 
