@@ -14,7 +14,6 @@ RUN yarn build
 
 # Remove the original src directory (our new compiled source is in the `dist` folder)
 RUN rm -r src
-RUN rm -rf node_modules
 
 # Assign `npm run start:prod` as the default command to run when booting the container
 ARG PORT
