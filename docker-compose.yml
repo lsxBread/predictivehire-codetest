@@ -1,10 +1,23 @@
 version: '2'
 
 services:
+  graphql-server:
+    container_name: prod-graphql-server-4000-4000
+    build:
+      context: graphql-server-4000
+      dockerfile: Dockerfile
+      args:
+        - PORT=${GRAPHQL_SERVER_PORT} 
+    image: prod-graphql-server-image
+    ports:
+      - '${GRAPHQL_SERVER_PORT}:${GRAPHQL_SERVER_PORT}'
+    environment:
+      - PORT=${GRAPHQL_SERVER_PORT}
+       
   api-gateway:
     container_name: prod-api-gateway-3000
     build:
-      context: ./src/api-gateway-3000
+      context: api-gateway-3000
       dockerfile: Dockerfile
       args:
         - PORT=${API_GATEWAY_PORT}
@@ -31,7 +44,7 @@ services:
   auth-service:
     container_name: prod-auth-service-8080
     build:
-      context: ./src/microservices/auth-service-8080
+      context: microservices/auth-service-8080
       dockerfile: Dockerfile
       args:
         - PORT=${AUTH_SERVICE_PORT}
@@ -48,7 +61,7 @@ services:
   user-service:
     container_name: prod-user-service-8001
     build:
-      context: ./src/microservices/user-service-8001
+      context: microservices/user-service-8001
       dockerfile: Dockerfile
       args:
         - PORT=${USER_SERVICE_PORT}
@@ -67,7 +80,7 @@ services:
   vacancy-service:
     container_name: prod-vacancy-service-8002
     build:
-      context: ./src/microservices/vacancy-service-8002
+      context: microservices/vacancy-service-8002
       dockerfile: Dockerfile
       args:
         - PORT=${VACANCY_SERVICE_PORT}
@@ -86,7 +99,7 @@ services:
   company-service:
     container_name: prod-company-service-8003
     build:
-      context: ./src/microservices/company-service-8003
+      context: microservices/company-service-8003
       dockerfile: Dockerfile
       args:
         - PORT=${COMPANY_SERVICE_PORT}

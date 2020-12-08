@@ -1,0 +1,12 @@
+# Start with a Node.js base image that uses Node v13
+FROM node:12
+WORKDIR /usr/src/app
+
+# Copy the  application source code to the container
+COPY . /usr/src/app 
+RUN yarn
+
+# Assign `npm run start:prod` as the default command to run when booting the container
+ARG PORT
+EXPOSE ${PORT}
+CMD ["yarn", "start:dev"]
